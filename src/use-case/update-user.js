@@ -14,7 +14,7 @@ export class UpdateUserUseCase {
                     updateUserParams.email,
                 );
 
-            if (userWithProvidedEmail) {
+            if (userWithProvidedEmail && userWithProvidedEmail.id !== userId) {
                 throw new EmailAlreadyInUseError(
                     `Email ${updateUserParams.email} already in use.`,
                 );
@@ -23,7 +23,6 @@ export class UpdateUserUseCase {
 
         const user = {
             ...updateUserParams,
-            user,
         };
 
         if (updateUserParams.password) {
