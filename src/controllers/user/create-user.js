@@ -8,6 +8,7 @@ import {
     created,
     serverError,
     validateRequiredFields,
+    requiredFieldIsMissingResponse,
 } from '../helpers/index.js';
 
 export class CreateUserController {
@@ -29,9 +30,7 @@ export class CreateUserController {
                 validateRequiredFields(params, requireFields);
 
             if (!requiredFieldsWereProvided) {
-                return badRequest({
-                    message: `Missing param: ${missingField}`,
-                });
+                return requiredFieldIsMissingResponse(missingField);
             }
 
             for (const field of requireFields) {

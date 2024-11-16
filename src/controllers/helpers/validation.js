@@ -13,6 +13,12 @@ export const checkIfIsString = (value) => {
     return typeof value === 'string';
 };
 
+export const requiredFieldIsMissingResponse = (field) => {
+    return badRequest({
+        message: `Missing param: ${field}`,
+    });
+};
+
 export const validateRequiredFields = (params, requiredFields) => {
     for (const field of requiredFields) {
         const fieldIsMissing = !params[field];
