@@ -1,20 +1,24 @@
-import { badRequest, ok, serverError } from '../controllers/helpers.js';
+import { badRequest, ok, serverError } from '../controllers/helpers/http.js';
 import validator from 'validator';
 import { UpdateUserUseCase } from '../use-case/update-user.js';
 import { EmailAlreadyInUseError } from '../errors/user.js';
+import {
+    checkIfEmailIsValid,
+    checkIfPasswordIsValid,
+    emailIsAlreadyInUseResponse,
+    invalidPasswordResponse,
+} from './helpers/user.js';
 
 export class UpdateUserController {
     async execute(httpRequest) {
         try {
-            const updateUserParams = httpRequest.body;
+            const params = httpRequest.body;
             const userId = httpRequest.params.userId;
 
             const isIdValid = validator.isUUID(userId);
 
             if (!isIdValid) {
-                return badRequest({
-                    message: 'Invalid user id',
-                });
+                return invalidPasswordResponse();
             }
 
             const allowedFields = [
@@ -24,11 +28,9 @@ export class UpdateUserController {
                 'password',
             ];
 
-            const someFieldIsNotAllowed = Object.keys(updateUserParams).some(
-                (field) => {
-                    return !allowedFields.includes(field);
-                },
-            );
+            const someFieldIsNotAllowed = Object.keys(params).some((field) => {
+                return !allowedFields.includes(field);
+            });
 
             if (someFieldIsNotAllowed) {
                 return badRequest({
@@ -36,34 +38,25 @@ export class UpdateUserController {
                 });
             }
 
-            if (updateUserParams.password) {
-                const passwordIsNotValid = updateUserParams.password.length < 6;
+            if (params.password) {
+                const passwordIsValid = checkIfPasswordIsValid(params.password);
 
-                if (passwordIsNotValid) {
-                    return badRequest({
-                        message: 'Password must be at least 6 characters',
-                    });
+                if (passwordIsValid) {
+                    return invalidPasswordResponse();
                 }
             }
 
-            if (updateUserParams.email) {
-                const emailIsNotValid = validator.isEmail(
-                    updateUserParams.email,
-                );
+            if (params.email) {
+                const emailIsNotValid = checkIfEmailIsValid(params.email);
 
                 if (!emailIsNotValid) {
-                    return badRequest({
-                        message: 'Invalid email',
-                    });
+                    return emailIsAlreadyInUseResponse();
                 }
             }
 
             const updateUserUseCase = new UpdateUserUseCase();
 
-            const updatedUser = await updateUserUseCase.execute(
-                userId,
-                updateUserParams,
-            );
+            const updatedUser = await updateUserUseCase.execute(userId, params);
 
             return ok(updatedUser);
         } catch (error) {
