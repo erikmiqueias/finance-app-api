@@ -20,7 +20,7 @@ export const invalidIdResponse = () => {
 };
 
 export const checkIfPasswordIsValid = (password) => {
-    return password.length >= 6;
+    return password.length <= 6;
 };
 
 export const checkIfEmailIsValid = (email) => validator.isEmail(email);
