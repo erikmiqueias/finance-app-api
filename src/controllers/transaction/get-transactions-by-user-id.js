@@ -1,6 +1,6 @@
 import { UserNotFoundError } from '../../errors/user.js';
-import { ok } from '../helpers/http.js';
-import { checkIfIdIsValid } from '../helpers/user.js';
+import { ok, serverError } from '../helpers/http.js';
+import { checkIfIdIsValid, userNotFoundResponse } from '../helpers/user.js';
 import {
     invalidIdResponse,
     requiredFieldIsMissingResponse,
@@ -31,9 +31,11 @@ export class GetTransactionByUserIdController {
 
             return ok(transactions);
         } catch (error) {
+            console.error(error);
             if (error instanceof UserNotFoundError) {
-                throw new UserNotFoundError(params.userId);
+                return userNotFoundResponse();
             }
+            return serverError();
         }
     }
 }
