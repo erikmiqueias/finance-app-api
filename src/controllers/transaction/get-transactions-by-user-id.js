@@ -6,7 +6,7 @@ import {
     requiredFieldIsMissingResponse,
 } from '../helpers/validation.js';
 
-export class GetTransactionByUserId {
+export class GetTransactionByUserIdController {
     constructor(getTransactionsByUserIdUseCase) {
         this.getTransactionsByUserIdUseCase = getTransactionsByUserIdUseCase;
     }
