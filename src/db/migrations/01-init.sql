@@ -6,7 +6,13 @@ CREATE TABLE IF NOT EXISTS users(
     password VARCHAR(100) NOT NULL
 );
 
-CREATE TYPE transaction_type AS ENUM('EARNING', 'EXPENSE', 'INVESTMENT');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'transaction_type') THEN
+        CREATE TYPE transaction_type AS ENUM('EARNING', 'EXPENSE', 'INVESTMENT');
+    END IF;
+END $$;
+
 
 CREATE TABLE IF NOT EXISTS transactions(
     ID UUID PRIMARY KEY,
