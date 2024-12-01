@@ -23,8 +23,6 @@ describe('Create User Controller', () => {
             },
         };
 
-        // act
-
         const result = await createUserControlelr.execute(httpRequest);
 
         // assert
