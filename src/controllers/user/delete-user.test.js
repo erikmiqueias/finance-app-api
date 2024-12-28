@@ -41,4 +41,27 @@ describe('DeleteUserController', () => {
 
         expect(result.statusCode).toBe(200);
     });
+
+    it('Should return 400 if id is invalid', async () => {
+        // arrange
+        const { sut } = makeSut();
+
+        // act
+        const result = await sut.execute({ params: { userId: 'invalid_id' } });
+
+        // assert
+        expect(result.statusCode).toBe(400);
+    });
+
+    it('Should return 404 if user is not found', async () => {
+        // arrange
+        const { sut, deleteUserUseCase } = makeSut();
+        jest.spyOn(deleteUserUseCase, 'execute').mockReturnValueOnce(null);
+
+        // act
+
+        const result = await sut.execute(httpRequest);
+        // assert
+        expect(result.statusCode).toBe(404);
+    });
 });

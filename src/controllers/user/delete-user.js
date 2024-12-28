@@ -25,7 +25,8 @@ export class DeleteUserController {
             }
 
             const deletedUser = await this.deleteUserUseCase.execute(userId);
-            if (deletedUser === undefined) {
+
+            if (!deletedUser) {
                 return userNotFoundResponse();
             }
 
