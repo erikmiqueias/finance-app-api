@@ -83,4 +83,19 @@ describe('UpdateUserController', () => {
         // assert
         expect(result.statusCode).toBe(400);
     });
+
+    it('Should return 400 when an unallowed field is provided', async () => {
+        // arrange
+        const { sut } = makeSut();
+        // act
+        const result = await sut.execute({
+            params: httpRequest.params,
+            body: {
+                ...httpRequest.body,
+                unallowed_field: faker.lorem.word(),
+            },
+        });
+        // assert
+        expect(result.statusCode).toBe(400);
+    });
 });
